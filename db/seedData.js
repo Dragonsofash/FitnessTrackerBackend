@@ -7,7 +7,7 @@ const {
   getRoutinesWithoutActivities,
   getAllActivities,
   addActivityToRoutine,
-} = require("db/index.js");
+} = require("./index");
 const client = require("./client");
 
 async function dropTables() {

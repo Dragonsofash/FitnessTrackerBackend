@@ -19,12 +19,16 @@ async function createActivity({ name, description }) {
 
 async function getAllActivities() {
   // select and return an array of all activities
-  const { rows } = await client.query(`
+  try {
+    const { rows } = await client.query(`
     SELECT id
     FROM activities;
   `);
 
-  return rows;
+    return rows;
+  } catch (error) {
+    throw error;
+  }
 }
 
 async function getActivityById(id) {}

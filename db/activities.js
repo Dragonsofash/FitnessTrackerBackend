@@ -19,21 +19,12 @@ async function createActivity({ name, description }) {
 
 async function getAllActivities() {
   // select and return an array of all activities
-  try {
-    const { rows: activityIds } = await client.query(`
+  const { rows } = await client.query(`
     SELECT id
     FROM activities;
   `);
 
-  const activities = await Promise.all(
-    activityIds.map((activity) => getActivityById(activity.id))
-  );
-
-  return activities;
-  } catch (error) {
-    throw
-  }
-  
+  return rows;
 }
 
 async function getActivityById(id) {}

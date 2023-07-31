@@ -1,7 +1,8 @@
 module.exports = {
   verbose: true,
-  globalSetup: './tests/setup.js',
-  globalTeardown: './tests/tearDown.js',
+  globalSetup: "./tests/setup.js",
+  globalTeardown: "./tests/tearDown.js",
   collectCoverage: false,
-  forceExit: true
+  testEnvironment: "node",
+  forceExit: true,
 };

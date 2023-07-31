@@ -1,5 +1,4 @@
 const client = require("./client");
-require("dotenv").config();
 const bcrypt = require("bcrypt");
 const SALT_COUNT = 10;
 

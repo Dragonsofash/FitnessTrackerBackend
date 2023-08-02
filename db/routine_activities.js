@@ -51,7 +51,7 @@ async function getRoutineActivitiesByRoutine({ id }) {
       `
       SELECT *
       FROM routine_activities
-      WHERE id = $1;
+      WHERE "routineId" = $1;
       `,
       [id]
     );
@@ -66,7 +66,7 @@ async function getRoutineActivitiesByRoutine({ id }) {
 async function updateRoutineActivity({ id, ...fields }) {
   try {
     const fieldEntries = Object.entries(fields);
-    const fieldUpdates = fieldEntries.map(([key, value], index) => {
+    const fieldUpdates = fieldEntries.map(([key], index) => {
       return `${key} = $${index + 2}`;
     });
 
@@ -92,7 +92,7 @@ async function updateRoutineActivity({ id, ...fields }) {
 async function destroyRoutineActivity(id) {
   try {
     const {
-      rows: [deletedRoutineActivity],
+      rows: [routineActivity],
     } = await client.query(
       `
       DELETE FROM routine_activities
@@ -102,7 +102,7 @@ async function destroyRoutineActivity(id) {
       [id]
     );
 
-    return deletedRoutineActivity;
+    return routineActivity;
   } catch (error) {
     console.error(error);
     throw error;

@@ -29,6 +29,7 @@
   },
   "homepage": "https://github.com/wallacepreston/fitnesstrackr#readme",
   "devDependencies": {
+    "@flydotio/dockerfile": "^0.4.1",
     "eslint": "^8.2.0",
     "eslint-plugin-jest": "^25.2.4",
     "nodemon": "^3.0.1",

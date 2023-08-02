@@ -25,12 +25,12 @@ async function createActivity({ name, description }) {
 async function getAllActivities() {
   // select and return an array of all activities
   try {
-    const { rows: activity } = await client.query(`
+    const { rows: activities } = await client.query(`
     SELECT *
     FROM activities;
   `);
 
-    return activity;
+    return activities;
   } catch (error) {
     console.error(error);
     throw error;
@@ -78,31 +78,26 @@ async function getActivityByName(name) {
 }
 
 // used as a helper inside db/routines.js
-async function attachActivitiesToRoutines(routines) {
+async function attachActivitiesToRoutines(routines, routineIds) {
   try {
     const { rows: activities } = await client.query(
       `
-        SELECT *
-        FROM activities
-        JOIN routine_activities ON activities.id = routine_activities."activityId"
-        WHERE routine_activities."routineId" = $1;
-        `,
-      [routine.id]
+      SELECT activities.*, routine_activities."routineId"
+      FROM activities
+      JOIN routine_activities ON activities.id = routine_activities."activityId"
+      WHERE routine_activities."routineId" = ANY($1);
+      `,
+      [routineIds]
     );
 
-    activities.map((activity) =>
-      routine_activities.filter((routine_activity) => {
-        if (activity.id === routine_activity.activityId) {
-          activity.count = routine_activity.count;
-          activity.duration = routine_activity.duration;
-          activity.routineId = routine_activity.routineId;
-          activity.routineActivityId = routine_activity.id;
-        }
-      })
-    );
+    for (const routine of routines) {
+      const routineActivities = activities.filter(
+        (activity) => activity.routineId === routine.id
+      );
+      routine.activities = routineActivities;
+    }
 
-    routine.activities = activities;
-    return activities;
+    return routines;
   } catch (error) {
     console.error(error);
     throw error;
@@ -136,6 +131,7 @@ async function updateActivity({ id, ...fields }) {
 
     return activity;
   } catch (error) {
+    console.error(error);
     throw error;
   }
 }

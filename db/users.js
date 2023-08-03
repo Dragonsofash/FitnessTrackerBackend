@@ -6,26 +6,31 @@ const SALT_COUNT = 10;
 
 // user functions
 async function createUser({ username, password }) {
-  const hashedPassword = await bcrypt.hash(password, SALT_COUNT);
+  try {
+    const hashedPassword = await bcrypt.hash(password, SALT_COUNT);
 
-  const {
-    rows: [user],
-  } = await client.query(
-    `
+    const {
+      rows: [user],
+    } = await client.query(
+      `
           INSERT INTO users(username, password) 
           VALUES($1, $2) 
           ON CONFLICT (username) DO NOTHING 
           RETURNING *;
         `,
-    [username, hashedPassword]
-  );
+      [username, hashedPassword]
+    );
 
-  if (!user) {
-    return null;
+    if (!user) {
+      return null;
+    }
+
+    delete user.password;
+    return user;
+  } catch (error) {
+    console.error(error);
+    throw error;
   }
-
-  delete user.password;
-  return user;
 }
 
 async function getUser({ username, password }) {
